@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const body = await readBody(event)
-    const allowedFields = ["password", "nama", "email", "role", "departemen", "no_telepon", "is_active"]
+    const allowedFields = ["nama_kategori", "keterangan"]
 
     // handling field tidak di kenal (tidak valid)
     const bodyKeys = Object.keys(body)
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
         })
     }
 
-    const sqlQuery = `UPDATE users  SET ${setClause.join(', ')} WHERE id = ?`
+    const sqlQuery = `UPDATE asset_categories  SET ${setClause.join(', ')} WHERE id = ?`
     values.push(id)
 
     const [result]: any = await db.execute(sqlQuery, values)

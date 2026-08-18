@@ -1,75 +1,82 @@
 import db from '../../database/mysql'
-import bcrypt from 'bcryptjs'
 
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
 
     const {
-      nama,
-      email,
-      password,
-      role = 'staff',
-      departemen,
-      no_telepon
+      gedung,
+      ruangan,
+      lantai,
+      keterangan
     } = body
 
     // Validasi
-    if (!nama || !email || !password) {
+    if (
+      !ruangan ||
+      ruangan.trim() === '' ||
+      !lantai
+    ) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Nama, email, dan password wajib diisi'
+        statusMessage: 'Ruangan dan lantai wajib diisi'
       })
     }
 
-    // Cek email
-    const [existing] = await db.execute(
-      'SELECT id FROM users WHERE email = ? LIMIT 1',
-      [email]
-    )
-
-    const existingUsers = existing as any[]
-
-    if (existingUsers.length > 0) {
-      throw createError({
-        statusCode: 409,
-        statusMessage: 'Email sudah digunakan'
-      })
-    }
-
-    // Hash password
-    const passwordHash = await bcrypt.hash(password, 10)
-
-    // Insert
-    const [result] = await db.execute(
+    // Cek apakah ruangan yang sama sudah ada di lantai yang sama
+    const [existingRows] = await db.execute(
       `
-      INSERT INTO users
-      (
-        nama,
-        email,
-        password_hash,
-        role,
-        departemen,
-        no_telepon,
-        is_active
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      SELECT id
+      FROM locations
+      WHERE LOWER(ruangan) = LOWER(?)
+      AND lantai = ?
+      LIMIT 1
       `,
       [
-        nama,
-        email,
-        passwordHash,
-        role,
-        departemen || null,
-        no_telepon || null,
-        1
+        ruangan.trim(),
+        lantai
+      ]
+    )
+
+    const existingLocations = existingRows as any[]
+
+    // Jika kombinasi ruangan + lantai sudah ada
+    if (existingLocations.length > 0) {
+      throw createError({
+        statusCode: 409,
+        statusMessage: `Ruangan ${ruangan} sudah ada di lantai ${lantai}`
+      })
+    }
+
+    // Insert lokasi
+    const [result]: any = await db.execute(
+      `
+      INSERT INTO locations (
+        gedung,
+        ruangan,
+        lantai,
+        keterangan
+      )
+      VALUES (?, ?, ?, ?)
+      `,
+      [
+        gedung?.trim() || null,
+        ruangan.trim(),
+        lantai,
+        keterangan?.trim() || null
       ]
     )
 
     return {
       success: true,
-      message: 'User berhasil ditambahkan',
-      data: result
+      message: 'Lokasi berhasil ditambahkan',
+      data: {
+        id: result.insertId,
+        gedung: gedung || null,
+        ruangan,
+        lantai,
+        keterangan: keterangan || null
+      }
     }
 
   } catch (error: any) {
@@ -80,4 +87,3 @@ export default defineEventHandler(async (event) => {
     })
   }
 })
-

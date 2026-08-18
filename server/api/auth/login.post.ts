@@ -55,25 +55,33 @@ export default defineEventHandler(async (event) => {
   }
 
   // Cek password
-  const passwordValid = await bcrypt.compare(
-    password,
-    user.password_hash
-  )
+const passwordValid = await bcrypt.compare(
+  password,
+  user.password_hash
+)
 
-  //validasi token
-  const token = createToken({
+if (!passwordValid) {
+  throw createError({
+    statusCode: 401,
+    statusMessage: 'Email atau password salah'
+  })
+}
+
+const allowedRoles = ['admin', 'teknisi', 'staff']
+
+if (!allowedRoles.includes(user.role)) {
+  throw createError({
+    statusCode: 403,
+    statusMessage: 'Role pengguna tidak memiliki akses'
+  })
+}
+
+// Buat token setelah semua validasi berhasil
+const token = createToken({
   id: user.id,
   email: user.email,
   role: user.role
 })
-
-  if (!passwordValid) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Email atau password salah'
-    })
-  }
-
   return {
   success: true,
   message: 'Login berhasil',

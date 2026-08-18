@@ -11,7 +11,21 @@ export default defineEventHandler(async (event) => {
     }
 
     const body = await readBody(event)
-    const allowedFields = ["password", "nama", "email", "role", "departemen", "no_telepon", "is_active"]
+    const allowedFields = [
+      "nama",
+      "category_id",
+      "location_id",
+      "brand",
+      "model",
+      "no_serial",
+      "spesifikasi",
+      "status",
+      "penanggung_jawab_id",
+      "tgl_perolehan",
+      "harga_perolehan",
+      "garansi_sampai",
+      "qr_code",
+      "catatan",]
 
     // handling field tidak di kenal (tidak valid)
     const bodyKeys = Object.keys(body)
@@ -44,7 +58,7 @@ export default defineEventHandler(async (event) => {
         })
     }
 
-    const sqlQuery = `UPDATE users  SET ${setClause.join(', ')} WHERE id = ?`
+    const sqlQuery = `UPDATE assets  SET ${setClause.join(', ')} WHERE id = ?`
     values.push(id)
 
     const [result]: any = await db.execute(sqlQuery, values)
@@ -53,12 +67,12 @@ export default defineEventHandler(async (event) => {
     if (result.affectedRows === 0) {
         throw createError({
             statusCode: 404,
-            statusMessage: 'User tidak ditemukan'
+            statusMessage: 'Asset tidak ditemukan'
         })
     }
 
     return {
         success: true,
-        message: 'Data user berhasil diperbarui'
+        message: 'Data asset berhasil diperbarui'
     }
 })
