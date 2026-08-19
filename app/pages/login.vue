@@ -37,7 +37,7 @@ const login = async () => {
       errorMessage.value = 'Role pengguna tidak dikenali'
       return
     }
-    const token = useCookie('token', {maxAge: 60 * 60 * 3 })
+    const token = useCookie('token', {maxAge: 60 * 60 *3 } )
     token.value = response.token
     const role = useCookie('role', {maxAge: 60 * 60 * 3} )
     role.value = response.data.role
