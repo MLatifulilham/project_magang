@@ -8,9 +8,10 @@ export default defineEventHandler(async (event) => {
   }
   const [rows] = await db.execute(`
     SELECT
-      id,
-      nama_kategori,
-      keterangan 
+      *
+      // id,
+      // nama_kategori,
+      // keterangan 
     FROM asset_categories
     WHERE id = ?
   `,

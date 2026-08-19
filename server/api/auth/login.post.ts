@@ -19,14 +19,15 @@ export default defineEventHandler(async (event) => {
   const [rows] = await db.execute(
     `
     SELECT
-      id,
-      nama,
-      email,
-      password_hash,
-      role,
-      departemen,
-      no_telepon,
-      is_active
+      *
+      // id,
+      // nama,
+      // email,
+      // password_hash,
+      // role,
+      // departemen,
+      // no_telepon,
+      // is_active
     FROM users
     WHERE email = ?
     LIMIT 1
