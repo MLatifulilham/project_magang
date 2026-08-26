@@ -4,7 +4,7 @@ export default defineEventHandler(async (event)=>{
     const id = getRouterParam(event,'id') ?? null
 
     const [result]: any = await db.execute(
-        `DELETE FROM notifications
+        `DELETE FROM tickets
         WHERE id = ? `,
         [id]
     )

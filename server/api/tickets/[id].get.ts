@@ -4,7 +4,7 @@ export default defineEventHandler(async (event)=>{
     const id = getRouterParam(event, 'id') ?? null
 
     const [rows] = await db.execute(
-    `SELECT * FROM notifications WHERE id = ?`,
+    `SELECT * FROM tickets WHERE id = ?`,
     [id]
   )
 
