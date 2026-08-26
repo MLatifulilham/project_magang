@@ -13,16 +13,15 @@ export default defineEventHandler(async (event) => {
   const [rows] = await db.execute(
     `
     SELECT
-      *
-      // id,
-      // nama,
-      // email,
-      // role,
-      // departemen,
-      // no_telepon,
-      // is_active,
-      // created_at,
-      // updated_at
+      id,
+      nama,
+      email,
+      role,
+      departemen,
+      no_telepon,
+      is_active,
+      created_at,
+      updated_at
     FROM users
     WHERE id = ?
     `,

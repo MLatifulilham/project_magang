@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
 
   const [result]: any = await db.execute(
     `
-    DELETE FROM locations
+    DELETE FROM maintenance_schedules
     WHERE id = ?
     `,
     [id]
@@ -13,13 +13,13 @@ export default defineEventHandler(async (event) => {
 if (result.affectedRows === 0) {
   throw createError({
     statusCode: 404,
-    statusMessage: 'lokasi tidak ditemukan'
+    statusMessage: 'id tidak ditemukan'
   })
 }
 
 
   return {
     success: true,
-    message: 'loaksi berhasil dihapus'
+    message: 'id berhasil dihapus'
   }
 })

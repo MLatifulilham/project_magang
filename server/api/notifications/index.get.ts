@@ -4,7 +4,7 @@ export default defineEventHandler(async()=>{
     const [rows]=await db.execute(`
         SELECT
         *
-        FROM maintenance_logs
+        FROM notifications
         ORDER BY id DESC`
     )
     return{

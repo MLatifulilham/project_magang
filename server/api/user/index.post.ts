@@ -14,7 +14,6 @@ export default defineEventHandler(async (event) => {
       no_telepon
     } = body
 
-    // Validasi
     if (!nama || !email || !password) {
       throw createError({
         statusCode: 400,
@@ -22,7 +21,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Cek email
     const [existing] = await db.execute(
       'SELECT id FROM users WHERE email = ? LIMIT 1',
       [email]
@@ -37,10 +35,8 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Hash password
     const passwordHash = await bcrypt.hash(password, 10)
 
-    // Insert
     const [result] = await db.execute(
       `
       INSERT INTO users
@@ -50,10 +46,9 @@ export default defineEventHandler(async (event) => {
         password_hash,
         role,
         departemen,
-        no_telepon,
-        is_active
+        no_telepon
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?)
       `,
       [
         nama,
@@ -62,7 +57,7 @@ export default defineEventHandler(async (event) => {
         role,
         departemen || null,
         no_telepon || null,
-        1
+        
       ]
     )
 

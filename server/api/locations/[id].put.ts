@@ -3,13 +3,6 @@ import db from '../../database/mysql'
 export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id')
 
-    if (!id) {
-        throw createError({
-            statusCode: 400,
-            statusMessage: 'ID user wajib diisi'
-        })
-    }
-
     const body = await readBody(event)
 
     const allowedFields = ["gedung", "ruangan", "lantai", "keterangan"]

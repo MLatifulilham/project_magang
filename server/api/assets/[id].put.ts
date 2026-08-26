@@ -2,32 +2,24 @@ import db from '../../database/mysql'
 
 export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id')
+    const body = await readBody(event).catch(() => ({}))
 
-    if (!id) {
-        throw createError({
-            statusCode: 400,
-            statusMessage: 'ID user wajib diisi'
-        })
-    }
-
-    const body = await readBody(event)
     const allowedFields = [
-      "nama",
-      "category_id",
-      "location_id",
-      "brand",
-      "model",
-      "no_serial",
-      "spesifikasi",
-      "status",
-      "penanggung_jawab_id",
-      "tgl_perolehan",
-      "harga_perolehan",
-      "garansi_sampai",
-      "qr_code",
-      "catatan",]
+      'nama',
+      'category_id',
+      'location_id',
+      'brand',
+      'model',
+      'no_serial',
+      'spesifikasi',
+      'status',
+      'penanggung_jawab_id',
+      'tgl_perolehan',
+      'harga_perolehan',
+      'garansi_sampai',
+      'qr_code',
+      'catatan',]
 
-    // handling field tidak di kenal (tidak valid)
     const bodyKeys = Object.keys(body)
     const invalidFields = bodyKeys.filter(key => !allowedFields.includes(key))
     if (invalidFields.length > 0) {
@@ -63,11 +55,10 @@ export default defineEventHandler(async (event) => {
 
     const [result]: any = await db.execute(sqlQuery, values)
 
-    // Cek apakah user ada
     if (result.affectedRows === 0) {
         throw createError({
             statusCode: 404,
-            statusMessage: 'Asset tidak ditemukan'
+            statusMessage: 'Asset id tidak ditemukan'
         })
     }
 
