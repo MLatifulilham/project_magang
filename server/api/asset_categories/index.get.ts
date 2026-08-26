@@ -1,18 +1,23 @@
 import db from '../../database/mysql'
 
 export default defineEventHandler(async () => {
-  const [rows] = await db.execute(`
+  try {
+    const [rows] = await db.execute(`
     SELECT
       *
-      // id,
-      // nama_kategori,
-      // keterangan 
     FROM asset_categories
     ORDER BY id DESC
   `)
-
-  return {
-    success: true,
-    data: rows
+    return {
+      success: true,
+      data: rows
+    }
+  } catch (error: any) {
+    console.error('Error fetching asset categories:', error)
   }
+
+  throw createError({
+    statusCode: 500,
+    statusMessage: 'Gagal mengambil data kategori aset'
+  })
 })

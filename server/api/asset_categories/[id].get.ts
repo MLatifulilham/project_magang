@@ -9,9 +9,6 @@ export default defineEventHandler(async (event) => {
   const [rows] = await db.execute(`
     SELECT
       *
-      // id,
-      // nama_kategori,
-      // keterangan 
     FROM asset_categories
     WHERE id = ?
   `,
@@ -22,7 +19,7 @@ export default defineEventHandler(async (event) => {
   if (assetcategories.length === 0) {
     throw createError({
       statusCode: 404,
-      statusMessage: 'User tidak ditemukan'
+      statusMessage: 'asset_categories tidak ditemukan'
     })
   }
 

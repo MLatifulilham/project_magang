@@ -3,31 +3,31 @@ import db from '../../database/mysql'
 export default defineEventHandler(async (event) => {
     try {
         const body = await readBody(event)
-const {
-      kode_tiket,
-      asset_id,
-      pelapor_id,
-      judul,
-      deskripsi,
-      prioritas = 'sedang',
-      status = 'open',
-      validasi_status = 'menunggu',
-      assigned_to
-    } = body
+        const {
+            kode_tiket,
+            asset_id,
+            pelapor_id,
+            judul,
+            deskripsi,
+            prioritas = 'sedang',
+            status = 'open',
+            validasi_status = 'menunggu',
+            assigned_to
+        } = body
 
-    if (
-      !kode_tiket ||
-      asset_id === undefined ||
-      asset_id === null ||
-      !pelapor_id ||
-      !judul ||
-      !deskripsi
-    ) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Kode tiket, asset, pelapor, judul, dan deskripsi wajib diisi'
-      })
-    }
+        if (
+            !kode_tiket ||
+            asset_id === undefined ||
+            asset_id === null ||
+            !pelapor_id ||
+            !judul ||
+            !deskripsi
+        ) {
+            throw createError({
+                statusCode: 400,
+                statusMessage: 'Kode tiket, asset, pelapor, judul, dan deskripsi wajib diisi'
+            })
+        }
 
         const formatDate = (val: any) => {
             if (!val) return null
@@ -57,7 +57,7 @@ const {
                 status,
                 validasi_status,
                 assigned_to ?? null
-      ]
+            ]
         )
 
         return {

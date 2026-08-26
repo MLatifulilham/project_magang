@@ -1,14 +1,7 @@
 import db from '../../database/mysql'
 
 export default defineEventHandler(async (event) => {
-    const id = getRouterParam(event, 'id')
-
-    if (!id) {
-        throw createError({
-            statusCode: 404,
-            statusMessage: 'endpoin harus mengunakan id endpoint/id'
-        })
-    }
+    const id = getRouterParam(event, 'id')?? null
     const body = await readBody(event)
     const allowFields = ["nama", "satuan", "stok", "harga_satuan"]
 

@@ -3,17 +3,17 @@ import db from '../../database/mysql'
 
 export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id')
-const body = await readBody(event).catch(() => ({}))
-    
-        const allowedFields = [
-            "prioritas",
-            "status",
-            "validasi_status",
-            "assigned_to",
-            "validated_by",
-            "validated_at",
-            "closed_at",
-            ]
+    const body = await readBody(event).catch(() => ({}))
+
+    const allowedFields = [
+        "prioritas",
+        "status",
+        "validasi_status",
+        "assigned_to",
+        "validated_by",
+        "validated_at",
+        "closed_at",
+    ]
     const bodyKeys = Object.keys(body)
     const invalidFields = bodyKeys.filter(key => !allowedFields.includes(key))
     if (invalidFields.length > 0) {

@@ -1,14 +1,7 @@
 import db from '../../database/mysql'
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, 'id')
-
-  if (!id) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'ID lokasi wajib diisi'
-    })
-  }
+  const id = getRouterParam(event, 'id') ?? null
 
   const [result]: any = await db.execute(
     `

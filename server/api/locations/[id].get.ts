@@ -10,12 +10,7 @@ export default defineEventHandler(async(event)=> {
 
     const [row]=await db.execute(`
         SELECT
-        id,
-        gedung,
-        lantai,
-        ruangan,
-        keterangan,
-        created_at
+        *
         FROM locations 
         WHERE id = ?
         `,

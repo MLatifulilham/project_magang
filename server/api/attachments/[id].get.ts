@@ -11,13 +11,6 @@ if(!id){
  const [row]=await db.execute(`
     SELECT 
     *
-    // id,
-    // ticket_id,
-    // asset_id,
-    // file_path,
-    // file_name,
-    // uploaded_by,
-    // created_at
     FROM attachments 
     WHERE id = ?
     `,

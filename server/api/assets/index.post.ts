@@ -22,7 +22,6 @@ export default defineEventHandler(async (event) => {
             catatan
         } = body
 
-        // Validasi field wajib
         if (
             !kode_aset ||
             !nama ||
@@ -38,7 +37,6 @@ export default defineEventHandler(async (event) => {
             })
         }
 
-        // Cek kode aset
         const [existingKode] = await db.execute(
             'SELECT id FROM assets WHERE kode_aset = ? LIMIT 1',
             [kode_aset]
@@ -53,7 +51,6 @@ export default defineEventHandler(async (event) => {
             })
         }
 
-        //cek nomor serial
         const [existingSerial] = await db.execute(
             'SELECT id FROM assets WHERE no_serial = ? LIMIT 1',
             [no_serial]
@@ -68,7 +65,6 @@ export default defineEventHandler(async (event) => {
             })
         }
 
-        // menambahakan data asset
         const [result]: any = await db.execute(
             `
       INSERT INTO assets (

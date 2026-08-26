@@ -1,20 +1,9 @@
 import db from '../../database/mysql'
 
 export default defineEventHandler(async(event) =>{
-    const id = getRouterParam(event, 'id')
-
-    if(!id){
-        throw createError({
-        })
-    }
-
+    const id = getRouterParam(event, 'id') ?? null
     const [row] =await db.execute(`SELECT 
-    id,
-    nama,
-    satuan,
-    stok,
-    harga_satuan,
-    created_at
+   *
     FROM spare_parts
     WHERE id = ?`, [id])
 

@@ -5,80 +5,45 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
 
     const {
+      ticket_id,
       asset_id,
       file_path,
       file_name,
       uploaded_by
     } = body
 
-    // Validasi
     if (
-      !asset_id ||
+      ticket_id === undefined ||
+      ticket_id === null ||
+      ticket_id === '' ||
+      asset_id === undefined ||
+      asset_id === null ||
+      asset_id === '' ||
       !file_path ||
       !file_name ||
-      !uploaded_by ||
-      String(file_path).trim() === '' ||
-      String(file_name).trim() === ''
+      uploaded_by === undefined ||
+      uploaded_by === null ||
+      uploaded_by === ''
     ) {
       throw createError({
         statusCode: 400,
-        statusMessage:
-          'asset_id, file_path, file_name, dan uploaded_by wajib diisi'
+        statusMessage: 'ticket_id, asset_id, file_path, file_name, dan uploaded_by wajib diisi'
       })
     }
 
-    // Cek asset
-    const [assetRows] = await db.execute(
-      `
-      SELECT id
-      FROM assets
-      WHERE id = ?
-      LIMIT 1
-      `,
-      [asset_id]
-    )
-
-    const assets = assetRows as any[]
-
-    if (assets.length === 0) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'Asset tidak ditemukan'
-      })
-    }
-
-    // Cek user yang mengupload
-    const [userRows] = await db.execute(
-      `
-      SELECT id
-      FROM users
-      WHERE id = ?
-      LIMIT 1
-      `,
-      [uploaded_by]
-    )
-
-    const users = userRows as any[]
-
-    if (users.length === 0) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'User uploader tidak ditemukan'
-      })
-    }
-
-    // Insert attachment
     const [result]: any = await db.execute(
       `
       INSERT INTO attachments (
+        ticket_id,
         asset_id,
         file_path,
         file_name,
         uploaded_by
       )
-      VALUES (?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?)
       `,
       [
+        ticket_id,
         asset_id,
         String(file_path).trim(),
         String(file_name).trim(),
@@ -91,6 +56,7 @@ export default defineEventHandler(async (event) => {
       message: 'Attachment berhasil ditambahkan',
       data: {
         id: result.insertId,
+        ticket_id,
         asset_id,
         file_path: String(file_path).trim(),
         file_name: String(file_name).trim(),
@@ -99,11 +65,15 @@ export default defineEventHandler(async (event) => {
     }
 
   } catch (error: any) {
-    console.error('ERROR ATTACHMENT:', error)
+    console.error('Attachments Error:', error)
 
     throw createError({
       statusCode: error.statusCode || 500,
-      statusMessage: error.statusMessage || error.message || 'Terjadi kesalahan pada server'
+      statusMessage:
+        error.sqlMessage ||
+        error.statusMessage ||
+        error.message ||
+        'Terjadi kesalahan pada server'
     })
   }
 })

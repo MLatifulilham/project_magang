@@ -16,7 +16,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Cek apakah kategori sudah ada
     const [existingRows] = await db.execute(
       `
       SELECT id
