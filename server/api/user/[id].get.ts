@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
   if (users.length === 0) {
     throw createError({
       statusCode: 404,
-      statusMessage: 'User tidak ditemukan'
+      statusMessage: 'User id tidak ditemukan'
     })
   }
 

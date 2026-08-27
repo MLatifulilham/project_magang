@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
       nama,
       email,
       password,
-      role = 'staff',
+      role = 'staff', //
       departemen,
       no_telepon
     } = body
@@ -21,9 +21,34 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    const namaClean = String(nama).trim()
+    const emailClean = String(email).trim()
+
+    if (namaClean === '') {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Nama tidak boleh kosong'
+      })
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+    if (!emailRegex.test(emailClean)) {
+      throw createError({
+        statusCode: 400,
+        statusMessage:
+          'Email tidak valid atau email mengandung spasi'
+      })
+    }
+
     const [existing] = await db.execute(
-      'SELECT id FROM users WHERE email = ? LIMIT 1',
-      [email]
+      `
+      SELECT id
+      FROM users
+      WHERE LOWER(email) = LOWER(?)
+      LIMIT 1
+      `,
+      [emailClean]
     )
 
     const existingUsers = existing as any[]
@@ -37,10 +62,9 @@ export default defineEventHandler(async (event) => {
 
     const passwordHash = await bcrypt.hash(password, 10)
 
-    const [result] = await db.execute(
+    const [result]: any = await db.execute(
       `
-      INSERT INTO users
-      (
+      INSERT INTO users (
         nama,
         email,
         password_hash,
@@ -51,28 +75,35 @@ export default defineEventHandler(async (event) => {
       VALUES (?, ?, ?, ?, ?, ?)
       `,
       [
-        nama,
-        email,
+        namaClean,
+        emailClean,
         passwordHash,
         role,
         departemen || null,
-        no_telepon || null,
-        
+        no_telepon || null
       ]
     )
 
     return {
       success: true,
       message: 'User berhasil ditambahkan',
-      data: result
+      data: {
+        id: result.insertId,
+        nama: namaClean,
+        email: emailClean,
+        role,
+        departemen: departemen || null,
+        no_telepon: no_telepon || null
+      }
     }
 
   } catch (error: any) {
+
     throw createError({
       statusCode: error.statusCode || 500,
       statusMessage:
-        error.statusMessage || 'Terjadi kesalahan pada server'
+        error.statusMessage ||
+        'Terjadi kesalahan pada server'
     })
   }
 })
-

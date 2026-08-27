@@ -1,6 +1,7 @@
 import db from '../../database/mysql'
 
 export default defineEventHandler(async () => {
+
   const [rows] = await db.execute(`
     SELECT
       id,
