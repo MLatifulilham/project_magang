@@ -7,7 +7,6 @@ const errorMessage = ref('')
 interface LoginResponse {
   success: boolean
   message: string
-  token: string
   data: {
     id: number
     nama: string
@@ -18,7 +17,7 @@ interface LoginResponse {
   }
 }
 
-const VALID_ROLES = ['admin', 'teknisi', 'staff']
+const VALID_ROLES = ['admin','staff', 'teknisi']
 
 const login = async () => {
   errorMessage.value = ''
@@ -37,16 +36,9 @@ const login = async () => {
       errorMessage.value = 'Role pengguna tidak dikenali'
       return
     }
-    const token = useCookie('token', {maxAge: 60 * 60 *3 } )
-    token.value = response.token
-    const role = useCookie('role', {maxAge: 60 * 60 * 3} )
-    role.value = response.data.role
-
  if (response.data.role === 'admin') {
       await navigateTo('/admin/dashboard')
     } else {
-      // Semua role selain admin (di sini cuma 'staff') masuk ke
-      // dashboard bersama di root, bukan folder per-role.
       await navigateTo('/dashboard')
     }
   } catch (error: any) {
@@ -54,6 +46,13 @@ const login = async () => {
   } finally {
     loading.value = false
   }
+  const logout = async () => {
+  await $fetch('/api/auth/logout', {
+    method: 'POST'
+  })
+
+  await navigateTo('/')
+}
 }
 </script>
 
@@ -85,7 +84,6 @@ const login = async () => {
           >
         </div>
 
-        <!-- v-if: baris ini hanya muncul kalau errorMessage tidak kosong -->
         <p v-if="errorMessage" class="text-red-500 text-sm mb-4">
           {{ errorMessage }}
         </p>

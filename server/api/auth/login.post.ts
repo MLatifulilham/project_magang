@@ -1,8 +1,15 @@
 import db from '../../database/mysql'
 import bcrypt from 'bcryptjs'
 import { createToken } from '~~/server/utils/jwt'
+import {
+  cekPercobaanLogin,
+  catatLoginGagal
+} from '../../utils/rate_limit_login'
 
-const dummy_hash = bcrypt.hashSync('dummy-password-untuk-timing-safety', 10)
+const dummy_hash = bcrypt.hashSync(
+  'dummy-password-untuk-timing-safety',
+  10
+)
 
 const generic_login_error = {
   statusCode: 401,
@@ -11,7 +18,13 @@ const generic_login_error = {
 
 export default defineEventHandler(async (event) => {
   try {
+    const ip =
+      getRequestIP(event, { xForwardedFor: true }) || 'unknown'
+
+    cekPercobaanLogin(ip)
+
     const body = await readBody(event)
+
     const { email, password } = body
 
     if (!email || !password) {
@@ -23,28 +36,40 @@ export default defineEventHandler(async (event) => {
 
     const [rows] = await db.execute(
       `
-      SELECT id, 
-        nama, 
-        email, 
-        password_hash, 
-        role, 
-        departemen, 
-        no_telepon, 
+      SELECT
+        id,
+        nama,
+        email,
+        password_hash,
+        role,
+        departemen,
+        no_telepon,
         is_active
       FROM users
       WHERE email = ?
       LIMIT 1
       `,
-      [email],
+      [email]
     )
 
     const users = rows as any[]
     const user = users[0]
 
-    const hashToCompare = user ? user.password_hash : dummy_hash
-    const passwordValid = await bcrypt.compare(password, hashToCompare)
+    const hashToCompare = user
+      ? user.password_hash
+      : dummy_hash
 
-    const allowedRoles = ['admin', 'teknisi', 'staff']
+    const passwordValid = await bcrypt.compare(
+      password,
+      hashToCompare
+    )
+
+    const allowedRoles = [
+      'admin',
+      'teknisi',
+      'staff'
+    ]
+
     const loginGagal =
       !user ||
       !passwordValid ||
@@ -52,14 +77,11 @@ export default defineEventHandler(async (event) => {
       !allowedRoles.includes(user.role)
 
     if (loginGagal) {
-      console.warn('[login] percobaan gagal untuk email:', email, {
-        userDitemukan: !!user,
-        passwordValid,
-        isActive: user?.is_active,
-      })
+      catatLoginGagal(ip)
 
       throw createError(generic_login_error)
     }
+
     const token = createToken({
       id: user.id,
       email: user.email,
@@ -77,7 +99,6 @@ export default defineEventHandler(async (event) => {
     return {
       success: true,
       message: 'Login berhasil',
-      token,
       data: {
         id: user.id,
         nama: user.nama,
@@ -87,16 +108,21 @@ export default defineEventHandler(async (event) => {
         no_telepon: user.no_telepon,
       },
     }
+
   } catch (error: any) {
-    if (error.statusCode === 400 || error.statusCode === 401) {
+    if (
+      error.statusCode === 400 ||
+      error.statusCode === 401 ||
+      error.statusCode === 429
+    ) {
       throw error
     }
 
-    console.error('[login] error tak terduga:', error)
+    console.error('[login] error:', error)
 
     throw createError({
       statusCode: 500,
-      statusMessage: 'Terjadi kesalahan pada server, coba lagi nanti',
+      statusMessage: 'Terjadi kesalahan pada server',
     })
   }
 })

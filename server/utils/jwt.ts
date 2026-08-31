@@ -22,7 +22,7 @@ function getSecret(): string {
 // Membuat JWT
 export function createToken(payload: JwtPayload): string {
   return jwt.sign(payload, getSecret(), {
-    expiresIn: '1d'
+    expiresIn: '12h'
   })
 }
 

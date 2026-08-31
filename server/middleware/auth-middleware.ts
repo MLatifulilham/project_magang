@@ -14,10 +14,8 @@ export default defineEventHandler((event) => {
   const isPublic = publicPaths.some((path) => event.path.startsWith(path))
   if (isPublic) return
 
-  // -----------------------------------------------------------------
   // Dari sini ke bawah: SEMUA endpoint /api/ lainnya WAJIB kirim token,
   // baik lewat header Authorization ATAU cookie 'token'.
-  // -----------------------------------------------------------------
   const authHeader = getHeader(event, 'authorization')
   const tokenFromHeader = authHeader?.startsWith('Bearer ')
     ? authHeader.slice('Bearer '.length).trim()
