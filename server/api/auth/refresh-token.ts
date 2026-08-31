@@ -28,7 +28,7 @@ export default defineEventHandler((event) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: 60 * 60 * 12, //cuman 12 jam aja
+    maxAge: 60 * 60 * 12,
     path: '/',
   })
 
