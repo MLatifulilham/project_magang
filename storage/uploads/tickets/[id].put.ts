@@ -1,5 +1,5 @@
 //put refaktorisasi
-import db from '../../database/mysql'
+import db from '../../../server/database/mysql'
 
 export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id')

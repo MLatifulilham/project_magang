@@ -6,7 +6,7 @@ interface Percobaan {
 const percobaanLogin = new Map<string, Percobaan>()
 
 const batas_percobaan = 5
-const jeda_waktu = 15 * 60 * 1000
+const jeda_waktu = 15 * 60 * 10
 
 export function cekPercobaanLogin(ip: string) {
   const sekarang = Date.now()
@@ -18,7 +18,7 @@ export function cekPercobaanLogin(ip: string) {
 
   if (data.jumlah >= batas_percobaan) {
     const sisaDetik = Math.ceil(
-      (data.resetPada - sekarang) / 1000
+      (data.resetPada - sekarang) / 10
     )
 
     throw createError({
