@@ -18,7 +18,7 @@ interface ApiResponse {
 }
 
 const { data: response } =
-  await useFetch<ApiResponse>('/api/locations')
+  await useFetch<ApiResponse>('/api/lokasi')
 
 const locations = computed(() =>
   response.value?.data || []

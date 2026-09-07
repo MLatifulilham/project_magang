@@ -5,27 +5,30 @@ definePageMeta({
 })
 
 
-interface Asset {
+interface Assets {
   id: number
   nama: string
   category_id: number
   location_id: number
   brand: string
   model: string
+  nama_kategori: string
+  gedung: string
+  ruangan: string
+  lantai: string
   no_serial: string
   status: string
+  file_path: string | null
 }
 
 interface AssetResponse {
   success: boolean
   message?: string
-  data: Asset[]
+  data: Assets[]
 }
 
 const {
   data: assetResponse,
-  // pending: assetPending,
-  // error: assetError
 } = await useFetch<AssetResponse>('/api/assets')
 
 const assets = computed(() =>
@@ -38,6 +41,7 @@ interface SparePart {
   nama: string
   jumlah: number
   satuan: string
+  stok: string
   status: string
 }
 
@@ -51,7 +55,7 @@ const {
   data: sparePartResponse,
   pending: sparePartPending,
   error: sparePartError
-} = await useFetch<SparePartResponse>('/api/spare-parts')
+} = await useFetch<SparePartResponse>('/api/spare_parts')
 
 const spareParts = computed(() =>
   sparePartResponse.value?.data || []
@@ -66,12 +70,16 @@ const totalSparePart = computed(() =>
   spareParts.value.length
 )
 
-const assetBaik = computed(() =>
-  assets.value.filter(asset => asset.status === 'baik').length
+const assetAktif = computed(() =>
+  assets.value.filter(asset => asset.status === 'aktif').length
 )
 
 const assetRusak = computed(() =>
   assets.value.filter(asset => asset.status === 'rusak').length
+)
+
+const assetPerbaikan = computed(() =>
+  assets.value.filter(asset => asset.status === 'perbaikan').length
 )
 
 </script>
@@ -82,278 +90,119 @@ const assetRusak = computed(() =>
   <div class="space-y-6">
 
     <div>
-
-      <h1 class="text-2xl font-bold text-gray-800">
-        Aset Kantor
-      </h1>
-
-      <p class="text-gray-500">
-        Daftar dan informasi aset kantor
-      </p>
-
+      <h2 class="text-lg font-semibold text-gray-800">Data Aset</h2>
+      <p class="text-sm text-gray-500">Daftar Aset kantor</p>
     </div>
 
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-4">
 
       <div class="space-y-6 xl:col-span-3">
 
-        <section class="overflow-hidden rounded-xl
-                 border border-gray-200
-                 bg-white shadow-sm">
+        <section @click="navigateTo('/admin/detail-aset/aset-detail')" class="overflow-hidden rounded-xl
+                    border border-gray-400
+                    bg-white shadow-sm
+                    cursor-pointer
+                    hover:shadow-md
+                    transition-shadow">
 
 
           <div class="flex items-center justify-between
-                   border-b border-gray-200
-                   px-5 py-4">
+                   border-b border-gray-400 px-5 py-4">
 
             <div>
 
-              <h2 class="text-lg font-semibold text-gray-800">
-                Data Aset
-              </h2>
+              <h2 class="text-lg font-semibold text-gray-800">Data Aset</h2>
 
-              <p class="text-sm text-gray-500">
-                Daftar aset kantor
-              </p>
+              <p class="text-sm text-gray-500">Daftar aset kantor</p>
 
             </div>
-
-            <span class="rounded-full bg-blue-100
-                     px-3 py-1 text-sm
-                     font-medium text-blue-700">
-              {{ totalAsset }} Aset
-            </span>
-
           </div>
 
-
           <div class="overflow-x-auto">
-
             <table class="w-full border-collapse">
-
               <thead>
-
                 <tr class="bg-gray-50">
-
-                  <th class="border-b px-4 py-3 text-left text-sm">
-                    Aset
-                  </th>
-
-                  <th class="border-b px-4 py-3 text-left text-sm">
-                    Nama
-                  </th>
-
-                  <th class="border-b px-4 py-3 text-left text-sm">
-                    Kategori
-                  </th>
-
-                  <th class="border-b px-4 py-3 text-left text-sm">
-                    Lokasi
-                  </th>
-
-                  <th class="border-b px-4 py-3 text-left text-sm">
-                    Status
-                  </th>
-
+                  <th class="border-b px-4 py-3 text-left text-sm">Aset</th>
+                  <th class="border-b px-4 py-3 text-left text-sm">Nama</th>
+                  <th class="border-b px-4 py-3 text-left text-sm">Kategori</th>
+                  <th class="border-b px-4 py-3 text-left text-sm">Lantai</th>
+                  <th class="border-b px-4 py-3 text-left text-sm">Ruangan</th>
+                  <th class="border-b px-4 py-3 text-left text-sm">Status</th>
                 </tr>
-
               </thead>
-
 
               <tbody>
 
-
-                <!-- <tr v-if="assetPending">
-
-                  <td
-                    colspan="5"
-                    class="px-4 py-8 text-center text-gray-500"
-                  >
-                    Memuat data aset...
-                  </td>
-
-                </tr> -->
-
-
-                <!-- <tr v-else-if="assetError">
-
-                  <td
-                    colspan="5"
-                    class="px-4 py-8 text-center text-red-500"
-                  >
-                    Gagal mengambil data aset.
-                  </td>
-
-                </tr> -->
-
-
-                <tr v-for="asset in assets" :key="asset.id" class="hover:bg-gray-50">
+                <tr v-for="(asset, index) in assets.slice(0, 5)" :key="asset.id" class="hover:bg-gray-50">
 
                   <td class="border-b px-4 py-3">
-                    {{ asset.id }}
+                    <img v-if="asset.file_path" :src="asset.file_path" :alt="asset.nama"
+                      class="h-10 w-10 rounded object-cover">
+                    <span v-else>-</span>
                   </td>
-
-                  <td class="border-b px-4 py-3 font-medium">
-                    {{ asset.nama }}
-                  </td>
-
+                  <td class="border-b px-4 py-3 font-medium">{{ asset.nama }}</td>
+                  <td class="border-b px-4 py-3">{{ asset.nama_kategori }}</td>
+                  <td class="border-b px-4 py-3">{{ asset.lantai }}</td>
+                  <td class="border-b px-4 py-3">{{ asset.ruangan }}</td>
                   <td class="border-b px-4 py-3">
-                    {{ asset.category_id }}
-                  </td>
+                    <span class="rounded-full px-3 py-1 text-xs font-medium" :class="{
+                      'bg-green-100 text-gray-600':
+                        asset.status === 'aktif',
 
-                  <td class="border-b px-4 py-3">
-                    {{ asset.location_id }}
-                  </td>
+                      'bg-red-100 text-red-700':
+                        asset.status === 'rusak',
 
-                  <td class="border-b px-4 py-3">
-
-                    <span class="rounded-full px-3 py-1
-                             text-xs font-medium" :class="{
-                              'bg-green-100 text-green-700':
-                                asset.status === 'baik',
-
-                              'bg-red-100 text-red-700':
-                                asset.status === 'rusak',
-
-                              'bg-yellow-100 text-yellow-700':
-                                asset.status === 'maintenance'
-                            }">
+                      'bg-yellow-100 text-yellow-700':
+                        asset.status === 'perbaikan'
+                    }">
                       {{ asset.status }}
                     </span>
-
                   </td>
-
                 </tr>
 
-
-
-                <!-- <tr v-if="!assetPending && !assetError && assets.length === 0">
-
-                  <td
-                    colspan="5"
-                    class="px-4 py-8 text-center text-gray-500"
-                  >
-                    Belum ada data aset.
-                  </td>
-
-                </tr> -->
-
               </tbody>
-
             </table>
-
           </div>
-
         </section>
 
-        <section class="overflow-hidden rounded-xl
-                 border border-gray-200
-                 bg-white shadow-sm">
+        <section @click="navigateTo('/admin/detail-spare-part/spare-part-detail')" class="overflow-hidden rounded-xl
+                    border border-gray-400
+                    bg-white shadow-sm
+                    cursor-pointer
+                    hover:shadow-md
+                    transition-shadow">
 
           <div class="flex items-center justify-between
-                   border-b border-gray-200
+                   border-b border-gray-400
                    px-5 py-4">
 
             <div>
-
-              <h2 class="text-lg font-semibold text-gray-800">
-                Data Spare Part
-              </h2>
-
-              <p class="text-sm text-gray-500">
-                Daftar komponen atau suku cadang aset
-              </p>
-
+              <h2 class="text-lg font-semibold text-gray-800">Data Spare Part</h2>
+              <p class="text-sm text-gray-500">Daftar komponen atau suku cadang aset</p>
             </div>
-
-            <span class="rounded-full bg-purple-100
-                     px-3 py-1 text-sm
-                     font-medium text-purple-700">
-              {{ totalSparePart }} Spare Part
-            </span>
-
           </div>
 
-
           <div class="overflow-x-auto">
-
             <table class="w-full border-collapse">
-
               <thead>
-
                 <tr class="bg-gray-50">
-
-                  <th class="border-b px-4 py-3 text-left text-sm">
-                    NO
-                  </th>
-
-                  <th class="border-b px-4 py-3 text-left text-sm">
-                    Nama
-                  </th>
-
-                  <th class="border-b px-4 py-3 text-left text-sm">
-                    Jumlah
-                  </th>
-
-                  <th class="border-b px-4 py-3 text-left text-sm">
-                    Satuan
-                  </th>
-
-                  <th class="border-b px-4 py-3 text-left text-sm">
-                    Status
-                  </th>
-
+                  <th class="border-b px-4 py-3 text-left text-sm">Spare Part</th>
+                  <th class="border-b px-4 py-3 text-left text-sm">Nama</th>
+                  <th class="border-b px-4 py-3 text-left text-sm">Jumlah</th>
+                  <th class="border-b px-4 py-3 text-left text-sm">Satuan</th>
                 </tr>
-
               </thead>
 
-
               <tbody>
-                <!--             <tr v-if="sparePartPending">
+                <tr v-for="part in spareParts.slice(0, 5)" :key="part.id" class="hover:bg-gray-50">
+                  <td></td>
+                  <td class="border-b px-4 py-3 font-medium">{{ part.nama }}</td>
 
-                  <td
-                    colspan="5"
-                    class="px-4 py-8 text-center text-gray-500"
-                  >
-                    Memuat data spare part...
-                  </td>
+                  <td class="border-b px-4 py-3">{{ part.stok }}</td>
 
-                </tr> -->
+                  <td class="border-b px-4 py-3">{{ part.satuan }}</td>
 
-
-                <!-- <tr v-else-if="sparePartError">
-
-                  <td
-                    colspan="5"
-                    class="px-4 py-8 text-center text-red-500"
-                  >
-                    Gagal mengambil data spare part.
-                  </td>
-
-                </tr> -->
-
-
-                <tr v-for="part in spareParts" :key="part.id" class="hover:bg-gray-50">
-
-                  <td class="border-b px-4 py-3">
-                    {{ part.id }}
-                  </td>
-
-                  <td class="border-b px-4 py-3 font-medium">
-                    {{ part.nama }}
-                  </td>
-
-                  <td class="border-b px-4 py-3">
-                    {{ part.jumlah }}
-                  </td>
-
-                  <td class="border-b px-4 py-3">
-                    {{ part.satuan }}
-                  </td>
-
-                  <td class="border-b px-4 py-3">
-                    {{ part.status }}
-                  </td>
+                  <td class="border-b px-4 py-3">{{ part.status }}</td>
 
                 </tr>
 
@@ -382,82 +231,63 @@ const assetRusak = computed(() =>
 
       <div class="space-y-6">
 
-        <div class="rounded-xl
-                 border border-gray-200
-                 bg-white
-                 p-5
-                 shadow-sm">
+        <div class="grid grid-cols-2 gap-6
+         rounded-xl
+         border border-gray-400
+         bg-white
+         p-5
+         shadow-sm">
 
-          <p class="text-sm text-gray-500">
-            Total Aset
-          </p>
+          <div>
+            <p class="text-sm text-gray-500">
+              Total Aset
+            </p>
 
-          <p class="mt-2 text-3xl font-bold text-gray-800">
-            {{ totalAsset }}
-          </p>
+            <p class="mt-2 text-3xl font-bold text-gray-800">
+              {{ totalAsset }}
+            </p>
+          </div>
 
-          <p class="mt-2 text-sm text-gray-500">
-            Aset yang terdaftar dalam sistem
-          </p>
+          <div>
+            <p class="text-sm text-gray-500">
+              Total Part
+            </p>
 
-        </div>
-
-        <div class="rounded-xl
-                 border border-gray-200
-                 bg-white
-                 p-5
-                 shadow-sm">
-
-          <p class="text-sm text-gray-500">
-            Kondisi Aset
-          </p>
-
-          <div class="mt-4 space-y-3">
-
-            <div class="flex justify-between">
-
-              <span class="text-sm text-gray-600">
-                Baik
-              </span>
-
-              <span class="font-semibold text-green-600">
-                {{ assetBaik }}
-              </span>
-
-            </div>
-
-            <div class="flex justify-between">
-
-              <span class="text-sm text-gray-600">
-                perbaikan
-              </span>
-              <span class="test-sm text-yellow-600">
-                {{ assetRusak }}
-              </span>
-            </div>
-
-            <div class="flex justify-between">
-
-              <span class="text-sm text-gray-600">
-                Rusak
-              </span>
-
-              <span class="font-semibold text-red-600">
-                {{ assetRusak }}
-              </span>
-            </div>
-
-
-
+            <p class="mt-2 text-3xl font-bold text-gray-800">
+              {{ totalSparePart }}
+            </p>
 
           </div>
 
         </div>
 
+        <div class="rounded-xl
+                 border border-gray-400
+                 bg-white
+                 p-5
+                 shadow-sm">
+
+          <p class="text-sm text-gray-500 text-sm font-semibold">Kondisi Aset</p>
+          <div class="mt-4 space-y-3">
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-600">Baik</span>
+              <span class="font-semibold">{{ assetAktif }}</span>
+            </div>
+
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-600 text-sm">perbaikan</span>
+              <span class="font-semibold ">{{ assetPerbaikan }}</span>
+            </div>
+
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-600 text-sm">Rusak</span>
+              <span class="font-semibold">{{ assetRusak }}</span>
+            </div>
+
+          </div>
+        </div>
       </div>
-
     </div>
-
   </div>
 
-</template>
+</template>>

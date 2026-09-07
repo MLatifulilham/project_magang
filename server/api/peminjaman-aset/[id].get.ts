@@ -5,15 +5,15 @@ export default defineEventHandler(async (event) => {
     const [row] = await db.execute(`
         SELECT 
    *
-    FROM spare_parts
+    FROM peminjaman_aset
     WHERE id = ?`, [id])
 
-    const spare_parts = row as any[]
+    const peminjaman_aset = row as any[]
 
-    if (spare_parts.length === 0) {
+    if (peminjaman_aset.length === 0) {
         throw createError({
             statusCode: 404,
-            statusMessage: "part tidak ditemukan"
+            statusMessage: "peminjaman aset tidak ditemukan"
         })
     }
 

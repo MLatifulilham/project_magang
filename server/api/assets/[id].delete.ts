@@ -1,5 +1,5 @@
-import db from '../../../server/database/mysql'
-import { requireAuth } from '../../../server/utils/jwt'
+import db from '../../database/mysql'
+import { requireAuth } from '../../utils/jwt'
 
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
