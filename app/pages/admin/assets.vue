@@ -193,7 +193,7 @@ const assetPerbaikan = computed(() =>
                 </tr>
               </thead>
 
-              <tbody>
+              <tbody> 
                 <tr v-for="part in spareParts.slice(0, 5)" :key="part.id" class="hover:bg-gray-50">
                   <td></td>
                   <td class="border-b px-4 py-3 font-medium">{{ part.nama }}</td>

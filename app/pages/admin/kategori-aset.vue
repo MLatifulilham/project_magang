@@ -32,10 +32,6 @@ const categories = computed(() => response.value?.data || [])
         <tr class="bg-gray-100">
 
           <th class="border p-3 text-left">
-            ID
-          </th>
-
-          <th class="border p-3 text-left">
             Nama Kategori
           </th>
           <th class="border p-3 text-left">
@@ -47,7 +43,6 @@ const categories = computed(() => response.value?.data || [])
       <tbody>
         <tr v-for="item in categories" :key="item.id">
 
-          <td class="border p-3">{{ item.id }}</td>
           <td class="border p-3">{{ item.nama_kategori }}</td>
           <td class="border p-3">{{ item.keterangan }}</td>
 

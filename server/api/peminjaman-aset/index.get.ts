@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
             SELECT
                 p.id,
                 p.asset_id,
-                p.peminjam_id,
+                u.nama as nama_peminjam,
                 p.disetujui_oleh,
                 p.tujuan_penggunaan,
                 p.lokasi_tujuan,
@@ -17,8 +17,9 @@ export default defineEventHandler(async (event) => {
                 p.kondisi_saat_pinjam,
                 p.kondisi_saat_kembali,
                 a.kode_aset,
-                a.nama AS nama_aset,
-                u.nama AS nama_peminjam
+                a.nama as nama_aset
+
+                
             FROM peminjaman_aset p
 
             LEFT JOIN assets a

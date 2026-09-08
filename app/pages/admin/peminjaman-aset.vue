@@ -12,6 +12,8 @@ interface PeminjamanAset {
   tgl_dikembalikan: string | null
   kondisi_saat_pinjam: string
   kondisi_saat_kembali: string | null
+  tujuan_penggunaan: string
+  lokasi_tujuan: string
 }
 
 interface ApiResponse {
@@ -52,6 +54,8 @@ const formatdate = (dateString: string | null) => {
               <th class="border p-3 text-left">Tanggal Dikembalikan</th>
               <th class="border p-3 text-left">Kondisi Saat Pinjam</th>
               <th class="border p-3 text-left">Kondisi Saat Kembali</th>
+              <th class="border p-3 text-left">Tujuan Peminjaman</th>
+              <th class="border p-3 text-left">Lokasi Peminjaman</th>
             </tr>
           </thead>
 
@@ -65,9 +69,11 @@ const formatdate = (dateString: string | null) => {
               <td class="border p-3">{{ formatdate(item.tgl_dikembalikan) || '-' }}</td>
               <td class="border p-3">{{ item.kondisi_saat_pinjam }}</td>
               <td class="border p-3">{{ item.kondisi_saat_kembali || '-' }}</td>
+              <td class="border p-3">{{ item.tujuan_penggunaan }}</td>
+              <td class="border p-3">{{ item.lokasi_tujuan }}</td>
             </tr>
             <tr v-if="peminjamanAset.length === 0">
-              <td colspan="8" class="border p-4 text-center text-gray-500">
+              <td colspan="10" class="border p-4 text-center text-gray-500">
                 Tidak ada data peminjaman aset.
               </td>
             </tr>

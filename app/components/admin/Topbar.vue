@@ -12,34 +12,23 @@
             </button> -->
 
             <span class="text-lg font-semibold text-gray-700">
-                SIMPERA
+                DASHBOARD ADMIN
             </span>
 
         </div>
 
-        <!-- <div class="flex-1 max-w-md mx-8">
+        <section @click="navigateTo('/admin/notifikasi')" class="cursor-pointer overflow-hidden">
+            <div class="flex items-center gap-4">
+                <button type="button">
+                    Notifikasi
+                </button>
 
-            <input type="text" placeholder="Cari..." class="w-full rounded-lg border
-               border-gray-300
-               px-4 py-2
-               text-sm">
-
-        </div> -->
-
-        <div class="flex items-center gap-4">
-
-            <button>
-                Notifikasi
-            </button>
-
-            <button class="flex h-9 w-9 items-center
-               justify-center rounded-full
-               bg-blue-500 text-white">
-                I
-            </button>
-
-        </div>
-
+                <button type="button"
+                    class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-500 text-white">
+                    I
+                </button>
+            </div>
+        </section>
     </header>
 
 </template>
