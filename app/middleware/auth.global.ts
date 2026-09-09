@@ -1,8 +1,4 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (to.path === '/login') {
-    return
-  }
-
   const requestFetch = useRequestFetch()
 
   let session
@@ -17,40 +13,56 @@ export default defineNuxtRouteMiddleware(async (to) => {
       }
     }>('/api/auth/cek-sesi')
   } catch {
+    session = null
+  }
+  const isLogin = session?.success === true
+  const role = session?.data?.role
+
+  if (to.path === '/login') {
+    if (!isLogin) {
+      return
+    }
+
+    if (role === 'admin') {
+      return navigateTo('/admin/dashboard')
+    }
+
+    if (role === 'staff') {
+      return navigateTo('/user/dashboard')
+    }
+
     return navigateTo('/login')
   }
 
-  if (!session?.success) {
+  if (!isLogin) {
     return navigateTo('/login')
   }
-
-  const role = session.data.role
 
   if (to.path === '/') {
     if (role === 'admin') {
       return navigateTo('/admin/dashboard')
     }
 
-    if (role === 'staff' || role === 'teknisi') {
-      return navigateTo('/dashboard')
+    if (role === 'staff') {
+      return navigateTo('/user/dashboard')
     }
 
     return navigateTo('/login')
   }
 
-  if (to.path.startsWith('/admin')) {
+  if (to.path === '/admin' || to.path.startsWith('/admin/')) {
     if (role !== 'admin') {
-      return navigateTo('/dashboard')
+      return navigateTo('/user/dashboard')
     }
+
+    return
   }
 
-  if (to.path === '/dashboard' || to.path.startsWith('/dashboard/')) {
-    if (role === 'admin') {
+  if (to.path === '/user' || to.path.startsWith('/user/')) {
+    if (role !== 'staff') {
       return navigateTo('/admin/dashboard')
     }
 
-    if (role !== 'staff' && role !== 'teknisi') {
-      return navigateTo('/login')
-    }
+    return
   }
 })

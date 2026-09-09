@@ -27,45 +27,27 @@ const logout = async () => {
         SIMPERA
       </div>
 
-      <NuxtLink to="/admin/dashboard" class="block px-10 py-3 rounded-lg hover:bg-white/50"
+      <NuxtLink to="/user/dashboard" class="block px-10 py-3 rounded-lg hover:bg-white/50"
         active-class="bg-white font-semibold">
         Dashboard
       </NuxtLink>
 
-      <NuxtLink to="/admin/assets" class="block px-10 py-3 rounded-lg hover:bg-white/50"
+      <NuxtLink to="/user/aset" class="block px-10 py-3 rounded-lg hover:bg-white/50"
         active-class="bg-white font-semibold">
         Aset kantor
       </NuxtLink>
 
-      <NuxtLink to="/admin/spare-part" class="block px-10 py-3 rounded-lg hover:bg-white/50"
+      <NuxtLink to="/user/spare-part" class="block px-10 py-3 rounded-lg hover:bg-white/50"
         active-class="bg-white font-semibold">
         Spare part
       </NuxtLink>
 
-      <NuxtLink to="/admin/pemeliharaan-aset" class="block px-10 py-3 rounded-lg hover:bg-white/50"
-        active-class="bg-white font-semibold">
-        Pemeliharaan Aset
-      </NuxtLink>
 
-      <NuxtLink to="/admin/peminjaman-aset" class="block px-10 py-3 rounded-lg hover:bg-white/50"
+      <NuxtLink to="/user/peminjaman-aset" class="block px-10 py-3 rounded-lg hover:bg-white/50"
         active-class="bg-white font-semibold">
         Peminjaman Aset
       </NuxtLink>
 
-      <NuxtLink to="/admin/kategori-aset" class="block px-8 py-3 rounded-lg hover:bg-white/50"
-        active-class="bg-white font-semibold">
-        Kategori Aset
-      </NuxtLink>
-
-      <NuxtLink to="/admin/lokasi" class="block px-10 py-3 rounded-lg hover:bg-white/50"
-        active-class="bg-white font-semibold">
-        lokasi 
-      </NuxtLink>
-
-      <NuxtLink to="/admin/pengguna" class="block px-10 py-3 rounded-lg hover:bg-white/50"
-        active-class="bg-white font-semibold">
-        Pengguna
-      </NuxtLink>
     </div>
 
     <div class="p-3">

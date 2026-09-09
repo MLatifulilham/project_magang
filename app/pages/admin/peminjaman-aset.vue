@@ -7,6 +7,7 @@ interface PeminjamanAset {
   id: number
   asset_id: number
   peminjam_id: number
+  nama_peminjam: string
   tgl_pinjam: string
   tgl_rencana_kembali: string
   tgl_dikembalikan: string | null
@@ -14,6 +15,7 @@ interface PeminjamanAset {
   kondisi_saat_kembali: string | null
   tujuan_penggunaan: string
   lokasi_tujuan: string
+  nama_aset: string
 }
 
 interface ApiResponse {
@@ -46,9 +48,9 @@ const formatdate = (dateString: string | null) => {
         <table class="w-full border-collapse border">
           <thead>
             <tr class="bg-gray-100">
-              <th class="border p-3 text-left">ID</th>
-              <th class="border p-3 text-left">Asset ID</th>
-              <th class="border p-3 text-left">Peminjam ID</th>
+              <th class="border p-3 text-left">aset</th>
+              <th class="border p-3 text-left">Nama aset</th>
+              <th class="border p-3 text-left">Peminjam</th>
               <th class="border p-3 text-left">Tanggal Pinjam</th>
               <th class="border p-3 text-left">Rencana Kembali</th>
               <th class="border p-3 text-left">Tanggal Dikembalikan</th>
@@ -61,9 +63,25 @@ const formatdate = (dateString: string | null) => {
 
           <tbody>
             <tr v-for="item in peminjamanAset" :key="item.id" class="hover:bg-gray-50">
-              <td class="border p-3">{{ item.id }}</td>
-              <td class="border p-3">{{ item.asset_id }}</td>
-              <td class="border p-3">{{ item.peminjam_id }}</td>
+  <!-- <td class="border p-2">
+
+                <img
+                  v-if="asset.file_path"
+                  :src="asset.file_path"
+                  :alt="asset.nama"
+                  class="h-14 w-20 object-cover"
+                >
+
+                <div
+                  v-else
+                  class="h-14 w-20 flex items-center justify-center bg-gray-100 text-xs text-gray-400"
+                >
+                  Tidak ada
+                </div>
+</td> -->
+              <td></td>
+              <td class="border p-3">{{ item.nama_aset }}</td>
+              <td class="border p-3">{{ item.nama_peminjam }}</td>
               <td class="border p-3">{{ formatdate(item.tgl_pinjam) }}</td>
               <td class="border p-3">{{ formatdate(item.tgl_rencana_kembali) }}</td>
               <td class="border p-3">{{ formatdate(item.tgl_dikembalikan) || '-' }}</td>

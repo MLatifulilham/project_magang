@@ -39,7 +39,7 @@ const login = async () => {
  if (response.data.role === 'admin') {
       await navigateTo('/admin/dashboard')
     } else {
-      await navigateTo('/dashboard')
+      await navigateTo('/user/dashboard')
     }
   } catch (error: any) {
     errorMessage.value = error?.data?.message || 'Email atau password salah'

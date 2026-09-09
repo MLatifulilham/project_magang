@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 definePageMeta({
-  layout: 'admin'
+  layout: 'user'
 })
 
 interface Asset {
@@ -13,7 +13,6 @@ interface Asset {
   model: string
   no_serial: string
   status: string
-  file_path: string
 }
 
 interface ApiResponse {
@@ -49,7 +48,7 @@ const assets = computed(() =>
         <tr class="bg-gray-100">
 
           <th class="border p-3 text-left">
-            aset
+            ID
           </th>
 
           <th class="border p-3 text-left">
@@ -85,11 +84,13 @@ const assets = computed(() =>
 
       <tbody>
 
-        <tr v-for="asset in assets" :key="asset.id" class="hover:bg-gray-50">
-          <td>
-            <img v-if="asset.file_path" :src="asset.file_path" :alt="asset.nama" class="h-14 w-20 object-cover">
-          </td>
+        <tr
+          v-for="asset in assets"
+          :key="asset.id"
+          class="hover:bg-gray-50"
+        >
 
+          <td class="border p-3"> {{ asset.id }}</td>
 
           <td class="border p-3">
             {{ asset.nama }}
